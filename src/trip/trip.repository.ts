@@ -66,6 +66,12 @@ export class TripRepository extends Repository<Trip> {
     return await this.save(trip);
   }
 
+  async updateTripToComplete(id: string) {
+    await this.findTripById(id);
+    const trip = await this.preload({ id, isCompleted: true });
+    return await this.save(trip);
+  }
+
   async deleteTripById(id: string) {
     const trip = await this.findTripById(id);
     try {

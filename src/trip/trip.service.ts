@@ -59,6 +59,10 @@ export class TripService {
     );
   }
 
+  async updateTripToComplete(id: string) {
+    return await this.tripRepository.updateTripToComplete(id);
+  }
+
   async delete(id: string) {
     return await this.tripRepository.deleteTripById(id);
   }

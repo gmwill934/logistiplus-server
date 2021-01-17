@@ -43,6 +43,11 @@ export class TripController {
     return await this.tripService.update(id, updateTripDto);
   }
 
+  @Patch(':id/complete')
+  async updateTripToComplete(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.tripService.updateTripToComplete(id);
+  }
+
   @Delete(':id')
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.tripService.delete(id);
