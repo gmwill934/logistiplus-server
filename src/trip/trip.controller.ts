@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth.jwt-guard';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from 'src/user/user.decorator';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { TripService } from './trip.service';
@@ -29,8 +31,8 @@ export class TripController {
   }
 
   @Post()
-  async create(@Body() createTripDto: CreateTripDto) {
-    return await this.tripService.create(createTripDto);
+  async create(@Body() createTripDto: CreateTripDto, @GetUser() user: User) {
+    return await this.tripService.create(createTripDto, user);
   }
 
   @Patch(':id')

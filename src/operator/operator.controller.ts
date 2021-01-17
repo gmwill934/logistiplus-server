@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth.jwt-guard';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from 'src/user/user.decorator';
 import { CreateOperatorDto } from './dto/create-operator.dto';
 import { UpdateOperatorDto } from './dto/update-operator.dto';
 import { OperatorService } from './operator.service';
@@ -29,8 +31,11 @@ export class OperatorController {
   }
 
   @Post()
-  async create(@Body() createOperatorDto: CreateOperatorDto) {
-    return await this.operatorService.create(createOperatorDto);
+  async create(
+    @Body() createOperatorDto: CreateOperatorDto,
+    @GetUser() user: User,
+  ) {
+    return await this.operatorService.create(createOperatorDto, user);
   }
 
   @Patch(':id')

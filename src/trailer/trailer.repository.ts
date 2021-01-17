@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { User } from 'src/user/entities/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateTrailerDto } from './dto/create-trailer.dto';
 import { UpdateTrailerDto } from './dto/update-trailer.dto';
@@ -10,6 +11,13 @@ import { Trailer } from './entities/trailer.entity';
 
 @EntityRepository(Trailer)
 export class TrailerRepository extends Repository<Trailer> {
+  async findAll() {
+    const trailers = await this.createQueryBuilder('trailer')
+      .innerJoinAndSelect('trailer.createdByUser', 'u')
+      .select(['trailer', 'u.id'])
+      .getMany();
+    return trailers;
+  }
   async findTrailerById(id: string) {
     const trailer = await this.findOne(id);
     if (!trailer) throw new NotFoundException(`Trailer does not exist`);
@@ -31,8 +39,9 @@ export class TrailerRepository extends Repository<Trailer> {
     return await this.save(trailer);
   }
 
-  async createTrailer(createTrailerDto: CreateTrailerDto) {
+  async createTrailer(createTrailerDto: CreateTrailerDto, user: User) {
     const trailer = this.create(createTrailerDto);
+    trailer.createdByUser = user;
     return await this.save(trailer);
   }
 

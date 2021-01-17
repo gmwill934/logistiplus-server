@@ -1,4 +1,7 @@
 import { words } from 'capitalize';
+import { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } from 'constants';
+import { Trip } from 'src/trip/entities/trip.entity';
+import { User } from 'src/user/entities/user.entity';
 
 import {
   BeforeInsert,
@@ -6,6 +9,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,6 +25,13 @@ export class Trailer {
 
   @Column({ nullable: false, type: 'boolean', default: true })
   isActive: boolean;
+
+  // Relationships
+  @ManyToOne(() => User, (user) => user.vehicle)
+  createdByUser: User;
+
+  @OneToMany(() => Trip, (trip) => trip.trailer)
+  trips: Trip[];
 
   @CreateDateColumn({ nullable: false })
   createdAt: Date;

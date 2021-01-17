@@ -7,9 +7,18 @@ import {
 } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @EntityRepository(Customer)
 export class CustomerRepository extends Repository<Customer> {
+  async findAll() {
+    const users = await this.createQueryBuilder('customer')
+      .innerJoinAndSelect('customer.createdByUser', 'u')
+      .select(['customer', 'u.id'])
+      .getMany();
+    return users;
+  }
+
   async findCustomerById(id: string) {
     const customer = await this.findOne(id);
     if (!customer) throw new NotFoundException(`Customer does not exist`);
@@ -31,8 +40,9 @@ export class CustomerRepository extends Repository<Customer> {
     return await this.save(customer);
   }
 
-  async createCustomer(createCustomerDto: CreateCustomerDto) {
+  async createCustomer(createCustomerDto: CreateCustomerDto, user: User) {
     const customer = this.create(createCustomerDto);
+    customer.createdByUser = user;
     return await this.save(customer);
   }
 

@@ -4,6 +4,8 @@ import {
 } from '@nestjs/common';
 import { Customer } from 'src/customer/entities/customer.entity';
 import { Operator } from 'src/operator/entities/operator.entity';
+import { Trailer } from 'src/trailer/entities/trailer.entity';
+import { User } from 'src/user/entities/user.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { Trip } from './entities/trip.entity';
@@ -36,11 +38,19 @@ export class TripRepository extends Repository<Trip> {
       .getMany();
   }
 
-  async createTrip(customer: Customer, operator: Operator, vehicle: Vehicle) {
+  async createTrip(
+    customer: Customer,
+    operator: Operator,
+    vehicle: Vehicle,
+    user: User,
+    trailer: Trailer,
+  ) {
     const trip = new Trip();
     trip.customer = customer;
     trip.operator = operator;
     trip.vehicle = vehicle;
+    trip.createdByUser = user;
+    trip.trailer = trailer;
     await this.save(trip);
     return trip;
   }

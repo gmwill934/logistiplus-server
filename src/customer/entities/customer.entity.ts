@@ -1,11 +1,13 @@
 import { words } from 'capitalize';
 import { Trip } from 'src/trip/entities/trip.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,8 +24,12 @@ export class Customer {
   @Column({ type: 'boolean', default: true, nullable: false })
   isActive: boolean;
 
+  // Relationships
   @OneToMany(() => Trip, (trip) => trip.customer)
   trips: Trip[];
+
+  @ManyToOne(() => User, (user) => user.customer)
+  createdByUser: User;
 
   @CreateDateColumn({ nullable: false })
   createdAt: Date;

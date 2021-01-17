@@ -12,14 +12,14 @@ export class UserRepository extends Repository<User> {
     return user;
   }
 
-  async findUserByEmail(email: string) {
-    const user = await this.findOne({ where: { email } });
+  async findUserByEmail(email: string): Promise<User> {
+    const user = await this.findOne({ where: { email: email.trim() } });
     if (!user) throw new NotFoundException(`Invalid Credentials`);
     return user;
   }
 
   async findUserByEmailForRegistering(email: string) {
-    const user = await this.findOne({ where: { email } });
+    const user = await this.findOne({ where: { email: email.trim() } });
     if (user) throw new BadRequestException(`Email already exists.`);
   }
 
@@ -29,6 +29,6 @@ export class UserRepository extends Repository<User> {
     const user = new User();
     user.email = email;
     user.password = await hashPassword(password);
-    return this.save(user);
+    return await this.save(user);
   }
 }

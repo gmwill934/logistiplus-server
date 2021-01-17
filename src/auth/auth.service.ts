@@ -3,6 +3,7 @@ import { verifyPassword } from 'src/common/utils/verifyPassword';
 import { UserService } from 'src/user/user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -11,19 +12,17 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string) {
+  async validateUser(email: string, pass: string): Promise<User> {
     const user = await this.userService.findOneByEmail(email);
     const isValidPassword = await verifyPassword(pass, user.password);
     if (user && isValidPassword) {
-      //eslint-disable-next-line
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
     throw new NotFoundException(`Invalid Credentials`);
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { sub: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
     };

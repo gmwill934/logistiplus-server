@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Trailer } from 'src/trailer/entities/trailer.entity';
+import { User } from 'src/user/entities/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
@@ -11,13 +12,22 @@ import { Vehicle } from './entities/vehicle.entity';
 
 @EntityRepository(Vehicle)
 export class VehicleRepository extends Repository<Vehicle> {
+  async findAll() {
+    const vehicles = await this.createQueryBuilder('vehicle')
+      .leftJoinAndSelect('vehicle.trailer', 't')
+      .innerJoinAndSelect('vehicle.createdByUser', 'v')
+      .select(['vehicle', 'v.id', 't.id'])
+      .getMany();
+    return vehicles;
+  }
   async findVehicleById(id: string) {
-    const vehicle = await this.findOne(id);
+    const vehicle = await this.findOne(id, { relations: ['trailer'] });
     if (!vehicle) throw new NotFoundException(`Vehicle does not exist`);
     return vehicle;
   }
-  async createVehicle(createVehicleDto: CreateVehicleDto) {
+  async createVehicle(createVehicleDto: CreateVehicleDto, user: User) {
     const vehicle = this.create(createVehicleDto);
+    vehicle.createdByUser = user;
     return await this.save(vehicle);
   }
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/user/entities/user.entity';
 import { CreateTrailerDto } from './dto/create-trailer.dto';
 import { UpdateTrailerDto } from './dto/update-trailer.dto';
 import { TrailerRepository } from './trailer.repository';
@@ -7,15 +8,15 @@ import { TrailerRepository } from './trailer.repository';
 export class TrailerService {
   constructor(private readonly trailerRepository: TrailerRepository) {}
   async findAll() {
-    return await this.trailerRepository.find();
+    return await this.trailerRepository.findAll();
   }
 
   async findOne(id: string) {
     return await this.trailerRepository.findTrailerById(id);
   }
 
-  async create(createTrailerDto: CreateTrailerDto) {
-    return await this.trailerRepository.createTrailer(createTrailerDto);
+  async create(createTrailerDto: CreateTrailerDto, user: User) {
+    return await this.trailerRepository.createTrailer(createTrailerDto, user);
   }
 
   async update(id: string, updateTrailerDto: UpdateTrailerDto) {

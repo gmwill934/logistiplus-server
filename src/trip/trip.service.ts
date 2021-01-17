@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CustomerService } from 'src/customer/customer.service';
 import { OperatorService } from 'src/operator/operator.service';
+import { User } from 'src/user/entities/user.entity';
 import { VehicleService } from 'src/vehicle/vehicle.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
@@ -23,15 +24,23 @@ export class TripService {
     return await this.tripRepository.findTripByIdWithRelations(id);
   }
 
-  async create(createTripDto: CreateTripDto) {
+  async create(createTripDto: CreateTripDto, user: User) {
     const { customerId, operatorId, vehicleId } = createTripDto;
     const operator = await this.operatorService.findOne(operatorId);
     const customer = await this.customerService.findOne(customerId);
     const vehicle = await this.vehicleService.findOne(vehicleId);
+    const trailer = vehicle.trailer;
+    console.log(trailer);
     if (!operator.isActive || !customer.isActive || !vehicle.isActive) {
       throw new BadRequestException(`Entities are inactive`);
     }
-    return await this.tripRepository.createTrip(customer, operator, vehicle);
+    return await this.tripRepository.createTrip(
+      customer,
+      operator,
+      vehicle,
+      user,
+      trailer,
+    );
   }
 
   async update(id: string, updateTripDto: UpdateTripDto) {

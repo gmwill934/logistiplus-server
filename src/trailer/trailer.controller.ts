@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth.jwt-guard';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from 'src/user/user.decorator';
 import { CreateTrailerDto } from './dto/create-trailer.dto';
 import { UpdateTrailerDto } from './dto/update-trailer.dto';
 import { TrailerService } from './trailer.service';
@@ -30,8 +32,11 @@ export class TrailerController {
   }
 
   @Post()
-  async create(@Body() createTrailerDto: CreateTrailerDto) {
-    return await this.trailerService.create(createTrailerDto);
+  async create(
+    @Body() createTrailerDto: CreateTrailerDto,
+    @GetUser() user: User,
+  ) {
+    return await this.trailerService.create(createTrailerDto, user);
   }
 
   @Patch(':id')

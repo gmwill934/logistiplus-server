@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth.jwt-guard';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from 'src/user/user.decorator';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehicleService } from './vehicle.service';
@@ -29,8 +31,11 @@ export class VehicleController {
   }
 
   @Post()
-  async create(@Body() createVehicleDto: CreateVehicleDto) {
-    return await this.vehicleService.create(createVehicleDto);
+  async create(
+    @Body() createVehicleDto: CreateVehicleDto,
+    @GetUser() user: User,
+  ) {
+    return await this.vehicleService.create(createVehicleDto, user);
   }
 
   @Patch(':id')

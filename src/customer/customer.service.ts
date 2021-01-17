@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/user/entities/user.entity';
 import { CustomerRepository } from './customer.repository';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -7,15 +8,18 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerService {
   constructor(private readonly customerRepository: CustomerRepository) {}
   async findAll() {
-    return await this.customerRepository.find();
+    return await this.customerRepository.findAll();
   }
 
   async findOne(id: string) {
     return await this.customerRepository.findCustomerById(id);
   }
 
-  async create(createCustomerDto: CreateCustomerDto) {
-    return await this.customerRepository.createCustomer(createCustomerDto);
+  async create(createCustomerDto: CreateCustomerDto, user: User) {
+    return await this.customerRepository.createCustomer(
+      createCustomerDto,
+      user,
+    );
   }
 
   async update(id: string, updateCustomerDto: UpdateCustomerDto) {

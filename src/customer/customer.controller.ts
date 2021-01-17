@@ -10,6 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth.jwt-guard';
+import { User } from 'src/user/entities/user.entity';
+import { GetUser } from 'src/user/user.decorator';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -29,8 +31,11 @@ export class CustomerController {
   }
 
   @Post()
-  async create(@Body() createCustomerDto: CreateCustomerDto) {
-    return await this.customerService.create(createCustomerDto);
+  async create(
+    @Body() createCustomerDto: CreateCustomerDto,
+    @GetUser() user: User,
+  ) {
+    return await this.customerService.create(createCustomerDto, user);
   }
 
   @Patch(':id')

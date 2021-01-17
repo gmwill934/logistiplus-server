@@ -1,6 +1,7 @@
 import { words } from 'capitalize';
 import { Trailer } from 'src/trailer/entities/trailer.entity';
 import { Trip } from 'src/trip/entities/trip.entity';
+import { User } from 'src/user/entities/user.entity';
 
 import {
   BeforeInsert,
@@ -9,6 +10,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -26,12 +28,16 @@ export class Vehicle {
   @Column({ nullable: false, type: 'boolean', default: true })
   isActive: boolean;
 
+  // Relationships
   @OneToMany(() => Trip, (trip) => trip.vehicle)
   trips: Trip[];
 
   @OneToOne(() => Trailer, { nullable: true })
   @JoinColumn()
   trailer: Trailer;
+
+  @ManyToOne(() => User, (user) => user.vehicle)
+  createdByUser: User;
 
   @CreateDateColumn({ nullable: false })
   createdAt: Date;
