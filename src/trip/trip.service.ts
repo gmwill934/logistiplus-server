@@ -30,9 +30,15 @@ export class TripService {
     const customer = await this.customerService.findOne(customerId);
     const vehicle = await this.vehicleService.findOne(vehicleId);
     const trailer = vehicle.trailer;
-    console.log(trailer);
+
     if (!operator.isActive || !customer.isActive || !vehicle.isActive) {
       throw new BadRequestException(`Entities are inactive`);
+    }
+
+    if (!vehicle.trailer) {
+      throw new BadRequestException(
+        `No trailer attached to Vehicle ${vehicle.id}`,
+      );
     }
     return await this.tripRepository.createTrip(
       customer,
@@ -48,6 +54,7 @@ export class TripService {
     const operator = await this.operatorService.findOne(operatorId);
     const customer = await this.customerService.findOne(customerId);
     const vehicle = await this.vehicleService.findOne(vehicleId);
+    const trailer = vehicle.trailer;
     if (!operator.isActive || !customer.isActive || !vehicle.isActive) {
       throw new BadRequestException(`Entities are inactive`);
     }
@@ -56,6 +63,7 @@ export class TripService {
       customer,
       operator,
       vehicle,
+      trailer,
     );
   }
 

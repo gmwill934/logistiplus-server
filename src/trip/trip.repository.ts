@@ -60,9 +60,16 @@ export class TripRepository extends Repository<Trip> {
     customer: Customer,
     operator: Operator,
     vehicle: Vehicle,
+    trailer: Trailer,
   ) {
     await this.findTripById(id);
-    const trip = await this.preload({ id, customer, operator, vehicle });
+    const trip = await this.preload({
+      id,
+      customer,
+      operator,
+      vehicle,
+      trailer,
+    });
     return await this.save(trip);
   }
 
