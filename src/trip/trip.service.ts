@@ -37,7 +37,7 @@ export class TripService {
 
     if (!vehicle.trailer) {
       throw new BadRequestException(
-        `No trailer attached to Vehicle ${vehicle.id}`,
+        `No trailer attached to Vehicle '${vehicle.id}'`,
       );
     }
     return await this.tripRepository.createTrip(
